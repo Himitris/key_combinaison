@@ -26,8 +26,10 @@ export const useKeySequence = (targetSequence: string[]) => {
     const normalizedKey = normalizeKey(keyState.key);
     const currentTime = keyState.timestamp;
 
-    if (currentTime - lastKeyTimestamp > SEQUENCE_TIMEOUT) {
+    // Only reset if we're not recording and there's been a timeout
+    if (!isRecording && currentTime - lastKeyTimestamp > SEQUENCE_TIMEOUT && sequence.current.length > 0) {
       resetSequence();
+      return { isCorrect: false, isComplete: false };
     }
 
     setLastKeyTimestamp(currentTime);
@@ -37,28 +39,32 @@ export const useKeySequence = (targetSequence: string[]) => {
         ...prev,
         current: [...prev.current, normalizedKey],
       }));
-      return { isCorrect: false, isComplete: false };
+      return { isCorrect: true, isComplete: false };
     }
 
-    setSequence(prev => {
-      const expectedKey = prev.target[prev.index];
-      const isCorrectKey = normalizedKey === expectedKey.toLowerCase();
-      const newIndex = isCorrectKey ? prev.index + 1 : 0;
-      const newCurrent = isCorrectKey 
-        ? [...prev.current, normalizedKey]
-        : [normalizedKey];
+    const expectedKey = targetSequence[sequence.index]?.toLowerCase();
+    const isCorrectKey = normalizedKey === expectedKey;
 
-      return {
-        ...prev,
-        current: newCurrent,
-        index: newIndex,
-      };
-    });
+    setSequence(prev => ({
+      ...prev,
+      current: [...prev.current, normalizedKey],
+      index: isCorrectKey ? prev.index + 1 : 0,
+    }));
 
-    const isCorrect = normalizedKey === targetSequence[sequence.index].toLowerCase();
-    const isComplete = isCorrect && sequence.index === targetSequence.length - 1;
+    // If the key was incorrect, we'll reset on the next frame to avoid immediate reset
+    if (!isCorrectKey) {
+      setTimeout(() => {
+        setSequence(prev => ({
+          ...prev,
+          current: [],
+          index: 0,
+        }));
+      }, 0);
+    }
 
-    return { isCorrect, isComplete };
+    const isComplete = isCorrectKey && sequence.index === targetSequence.length - 1;
+
+    return { isCorrect: isCorrectKey, isComplete };
   }, [sequence, lastKeyTimestamp, isRecording, targetSequence, resetSequence]);
 
   return {

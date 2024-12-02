@@ -35,11 +35,6 @@ function App() {
   } = useKeySequence(combination);
 
   const handleKeyEvent = useCallback((keyState: { key: string; timestamp: number; source: 'keyboard' | 'mouse' | 'button' }) => {
-    // Don't process mouse clicks when clicking the save button during recording
-    if (isRecording && keyState.source === 'mouse') {
-      return;
-    }
-
     if (!startTime && !isRecording) {
       setStartTime(Date.now());
     }
@@ -61,6 +56,7 @@ function App() {
         }));
       }
       resetSequence();
+      setStartTime(null);
     }
 
     if (isComplete && startTime) {

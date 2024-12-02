@@ -21,7 +21,11 @@ export const CombinationEditor: React.FC<CombinationEditorProps> = ({
         <h3 className="text-lg font-medium text-gray-900">Edit Combination</h3>
         {isRecording ? (
           <button
-            onClick={() => onSaveCombination(currentSequence)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onSaveCombination(currentSequence);
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
           >
             <Save className="w-4 h-4" />
