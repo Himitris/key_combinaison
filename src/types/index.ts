@@ -19,7 +19,7 @@ export interface LoopModeStats {
   errors: number;
 }
 
-export type TrainingMode = 'speed' | 'loop';
+export type TrainingMode = 'speed' | 'loop' | 'kiting';
 
 export interface KeySequence {
   current: string[];
@@ -31,4 +31,15 @@ export interface KeyState {
   key: string;
   timestamp: number;
   source: 'keyboard' | 'mouse' | 'button';
+}
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface Character {
+  position: Position;
+  targetPosition: Position | null;
+  isAttackRangeVisible: boolean;
 }

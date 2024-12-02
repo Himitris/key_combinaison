@@ -3,13 +3,14 @@ import { KeyDisplay } from './components/KeyDisplay';
 import { TrainingStats } from './components/TrainingStats';
 import { TrainingModeSelector } from './components/TrainingModeSelector';
 import { CombinationEditor } from './components/CombinationEditor';
+import { KitingArena } from './components/KitingArena';
 import { useKeySequence } from './hooks/useKeySequence';
 import { useKeyDetection } from './hooks/useKeyDetection';
 import type { TrainingMode, SpeedModeStats, LoopModeStats } from './types';
 
 function App() {
   const [mode, setMode] = useState<TrainingMode>('speed');
-  const [combination, setCombination] = useState(['a', 'r', 'c']);
+  const [combination, setCombination] = useState(['right click', 'q', 'left click']);
   const [speedStats, setSpeedStats] = useState<SpeedModeStats>({
     attempts: 0,
     bestTime: Infinity,
@@ -136,6 +137,16 @@ function App() {
             onSaveCombination={handleSaveCombination}
             currentSequence={sequence.current}
           />
+
+          {mode === 'kiting' && (
+            <KitingArena onKeyPress={(key) => {
+              handleKeyEvent({
+                key,
+                timestamp: Date.now(),
+                source: key.toLowerCase().includes('mouse') ? 'mouse' : 'keyboard'
+              });
+            }} />
+          )}
 
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">
