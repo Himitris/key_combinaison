@@ -43,3 +43,18 @@ export interface Character {
   targetPosition: Position | null;
   isAttackRangeVisible: boolean;
 }
+
+export interface Enemy {
+  id: string;
+  position: Position;
+  health: number;
+  isBeingAttacked: boolean;
+  deathAnimation: number;
+}
+
+export interface Attack {
+  id: string;
+  position: Position;
+  targetPosition: Position;
+  progress: number;
+}
