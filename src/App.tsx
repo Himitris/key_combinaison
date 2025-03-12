@@ -6,6 +6,7 @@ import { CombinationEditor } from './components/CombinationEditor';
 import { KitingArena } from './components/KitingArena';
 import { useKeySequence } from './hooks/useKeySequence';
 import { useKeyDetection } from './hooks/useKeyDetection';
+import { Shield, Keyboard } from 'lucide-react';
 import type { TrainingMode, SpeedModeStats, LoopModeStats } from './types';
 
 function App() {
@@ -117,52 +118,89 @@ function App() {
   }, [resetSequence]);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 py-12 px-4 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-600 transform -skew-y-3 -translate-y-24 z-0"></div>
+      
+      <div className="max-w-5xl mx-auto space-y-10 relative z-10">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Key Combination Trainer
+          <div className="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-lg mb-4">
+            <Keyboard className="w-10 h-10 text-indigo-600" />
+          </div>
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+              Keymaster Training
+            </span>
           </h1>
-          <p className="text-gray-600">
-            Practice your keyboard shortcuts and improve your speed
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Master your keyboard combinations for faster gameplay and increased productivity
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-8 shadow-sm space-y-8">
-          <TrainingModeSelector mode={mode} onModeChange={setMode} />
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+          <div className="border-b border-gray-100 px-8 py-6">
+            <TrainingModeSelector mode={mode} onModeChange={setMode} />
+          </div>
           
-          <CombinationEditor
-            isRecording={isRecording}
-            onStartRecording={handleStartRecording}
-            onSaveCombination={handleSaveCombination}
-            currentSequence={sequence.current}
-          />
+          <div className="p-8 space-y-10">
+            <CombinationEditor
+              isRecording={isRecording}
+              onStartRecording={handleStartRecording}
+              onSaveCombination={handleSaveCombination}
+              currentSequence={sequence.current}
+            />
 
-          {mode === 'kiting' && (
-            <KitingArena onKeyPress={(key) => {
-              handleKeyEvent({
-                key,
-                timestamp: Date.now(),
-                source: key.toLowerCase().includes('mouse') ? 'mouse' : 'keyboard'
-              });
-            }} />
-          )}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
+              <h2 className="text-xl font-semibold text-indigo-800 mb-6 flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Current Combination
+              </h2>
+              <KeyDisplay 
+                sequence={combination}
+                currentIndex={sequence.index}
+              />
+            </div>
 
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Current Combination
-            </h2>
-            <KeyDisplay 
-              sequence={combination}
-              currentIndex={sequence.index}
+            {mode === 'kiting' && (
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Kiting Arena</h2>
+                <p className="text-gray-600 mb-4">
+                  Use right-click to move, Q to reveal attack range, and left-click to attack enemies within range.
+                </p>
+                <KitingArena onKeyPress={(key) => {
+                  handleKeyEvent({
+                    key,
+                    timestamp: Date.now(),
+                    source: key.toLowerCase().includes('mouse') ? 'mouse' : 'keyboard'
+                  });
+                }} />
+              </div>
+            )}
+
+            <TrainingStats 
+              mode={mode}
+              speedStats={speedStats}
+              loopStats={loopStats}
             />
           </div>
-
-          <TrainingStats 
-            mode={mode}
-            speedStats={speedStats}
-            loopStats={loopStats}
-          />
+        </div>
+        
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Tips & Tricks</h3>
+          <ul className="text-gray-600 space-y-2">
+            <li className="flex items-start gap-2">
+              <div className="min-w-4 h-4 bg-indigo-500 rounded-full mt-1.5"></div>
+              <p>Record custom combinations to practice specific actions for your games</p>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="min-w-4 h-4 bg-indigo-500 rounded-full mt-1.5"></div>
+              <p>Use Kiting Mode to practice movement and attack patterns like in MOBAs</p>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="min-w-4 h-4 bg-indigo-500 rounded-full mt-1.5"></div>
+              <p>Loop Mode helps build muscle memory through repetition</p>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
