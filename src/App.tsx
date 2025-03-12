@@ -4,6 +4,7 @@ import { TrainingStats } from './components/TrainingStats';
 import { TrainingModeSelector } from './components/TrainingModeSelector';
 import { CombinationEditor } from './components/CombinationEditor';
 import { KitingArena } from './components/KitingArena';
+import { ImprovedHeader } from './components/ImprovedHeader';
 import { useKeySequence } from './hooks/useKeySequence';
 import { useKeyDetection } from './hooks/useKeyDetection';
 import { Shield, Keyboard } from 'lucide-react';
@@ -118,25 +119,11 @@ function App() {
   }, [resetSequence]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 py-12 px-4 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-600 transform -skew-y-3 -translate-y-24 z-0"></div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Improved Header Component */}
+      <ImprovedHeader />
       
-      <div className="max-w-5xl mx-auto space-y-10 relative z-10">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-lg mb-4">
-            <Keyboard className="w-10 h-10 text-indigo-600" />
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-              Keymaster Training
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Master your keyboard combinations for faster gameplay and increased productivity
-          </p>
-        </div>
-
+      <div className="max-w-5xl mx-auto px-4 -mt-6 space-y-10 relative z-10 pb-12">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
           <div className="border-b border-gray-100 px-8 py-6">
             <TrainingModeSelector mode={mode} onModeChange={setMode} />
